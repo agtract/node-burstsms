@@ -6,7 +6,7 @@ Send SMS from your node app (or CLI!) using BurstSMS.
 `npm install burstsms --save`
 
 Create `.burstsmsrc` config file as per the [rc](https://www.npmjs.com/package/rc) modules's location suggestions. Example file:
-```
+```JSON
 {
   "key": "KEY_GOES_HERE",
   "secret": "SECRET_GOES_HERE"
@@ -18,7 +18,7 @@ Create `.burstsmsrc` config file as per the [rc](https://www.npmjs.com/package/r
 ### Node
 ####Send SMS
 
-```
+```JavaScript
 var sms = require('burstsms').sms
 
 sms.formatNumber('XX', '0000000000').then(function(body, res){
@@ -35,4 +35,6 @@ sms.formatNumber('XX', '0000000000').then(function(body, res){
 
 ### CLI
 ####Send SMS
-`burstsms sms send -m "Your message here" -n 0000000000`
+```
+burstsms sms send -m "Your message here" -n 0000000000
+```
