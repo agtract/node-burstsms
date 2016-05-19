@@ -1,9 +1,9 @@
-var request = require('request')
-
-module.exports = function(options) {
+module.exports = (function(options) {
+  var self = this
+  
   var config = require('./config')(options)
   
-  this.sms = require('./sms')(config)
+  self.sms = require('./sms')(config)
   
-  return this
-}
+  return self
+})()

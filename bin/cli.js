@@ -1,6 +1,6 @@
 #! /usr/bin/env node
 
-var burstsms = require('../src')()
+var burstsms = require('../src')
 
 var args = require('yargs')
 .command('sms', 'SMS methods', function(yargs){
