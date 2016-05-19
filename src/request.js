@@ -1,5 +1,6 @@
 var request = require('request')
 var defaultsDeep = require('lodash').defaultsDeep
+var Promise = require('promise')
 
 module.exports = function (method, params, config) {
   config = defaultsDeep(config, {
@@ -9,12 +10,20 @@ module.exports = function (method, params, config) {
     secret: null
   })
   
-  return request.post({
-    url: config.url + config.version + '/' + method + '.json',
-    form: params,
-    auth: {
-      user: config.key,
-      pass: config.secret
-    }
-  }, function () {})
+  return new Promise(function (fulfill, reject){
+    request.post({
+      url: config.url + config.version + '/' + method + '.json',
+      form: params,
+      auth: {
+        user: config.key,
+        pass: config.secret
+      }
+    }, function (err, res, body) {
+      if (err) reject(err)
+      body = JSON.parse(body)
+      if (res.statusCode !== 200 || body.error.code !== 'SUCCESS') reject(body.error.description)
+      if ('error' in body.error) reject(body.error.error.message)
+      fulfill(body, res)
+    })
+  })
 }

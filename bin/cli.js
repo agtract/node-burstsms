@@ -2,7 +2,7 @@
 
 var burstsms = require('../src')
 
-var args = require('yargs')
+require('yargs')
 .command('sms', 'SMS methods', function(yargs){
   return yargs
   .command('send', 'Send an SMS', function(yargs){
@@ -20,9 +20,14 @@ var args = require('yargs')
       }
     })
     
-    burstsms.sms.send(args.argv.message, args.argv.number)
-    
-    return args
+    burstsms.sms.send(args.argv.message, args.argv.number).then(function(body, res){
+      console.log('Message Sent!')
+      process.exit(1)
+    })
+    .catch(function(error){
+      console.log('Message could not be sent. Reason: ' + error)
+      process.exit(0)
+    })
   })
 })
 .help('h')

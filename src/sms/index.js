@@ -1,66 +1,29 @@
-var inherits = require('util').inherits
-var EventEmitter = require('events').EventEmitter
-var defaultsDeep = require('lodash').defaultsDeep
+var _ = require('lodash')
+var request = require('../request')
 
-var sms = function (config) {
-  if (!(this instanceof sms))
-    return new sms(config);
-
+module.exports = function (config) {
   var self = this
 
-  var request = require('../request')
-
-  this.send = function (message, to) {    
-    self.emit('send:before', message, to)
-
-    var req = request('send-sms', {
-      message: message,
-      to: to
-    }, config)
-
-    req.on('complete', function(res, body) {
-      var data = {
-        response: res.toJSON(),
-        body: JSON.parse(body)
+  self.methods = {
+    // .send()
+    send: function (message, to) {
+      var params = {
+        message: message,
+        to: to
       }
+      return request('send-sms', params, config)
+    },
 
-      self.emit('send:complete', data)
-
-      if (data.response.statusCode === 200 && data.body.error.code === 'SUCCESS') {
-        self.emit('send:success', data.body, data)
-      } else {
-        self.emit('send:error', new Error(data.body.error.description), data)
+    // .formatNumber()
+    formatNumber: function (countryCode, number) {
+      var params = {
+        msisdn: number,
+        countrycode: countryCode
       }
-    });
-    
-    return self
+      return request('format-number', params, config)
+    }
   }
 
-  this.formatNumber = function (countryCode, number) {
-    self.emit('format-number:before', countryCode, number)
-
-    var req = request('format-number', {
-      msisdn: number,
-      countrycode: countryCode
-    }, config)
-
-    req.on('complete', function(res, body) {
-      var data = {
-        response: res.toJSON(),
-        body: JSON.parse(body)
-      }
-
-      self.emit('format-number:complete', data)
-
-      if (data.response.statusCode === 200 && data.body.error.code === 'SUCCESS') {
-        self.emit('format-number:success', data.body.number, data)
-      } else {
-        self.emit('format-number:error', new Error(data.body.error.description), data)
-      }
-    });
-    
-    return self
-  }
+  // we'll return only objects from known places, such as self.methods. This keeps everything else private.
+  return _.assign({}, self.methods)
 }
-inherits(sms, EventEmitter)
-module.exports = sms
