@@ -8,6 +8,6 @@ module.exports = (function(options) {
     sms: require('./sms')(config)
   }
 
-  // we'll return only objects from known places, such as self.methods. This keeps everything else private.
+  // we'll return only objects from known places, such as self.resources. This keeps everything else private.
   return _.assign({}, self.resources)
 })()
