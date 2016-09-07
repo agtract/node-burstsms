@@ -1,10 +1,7 @@
-var _ = require('lodash')
 var request = require('../request')
 
 module.exports = function (config) {
-  var self = this
-
-  self.methods = {
+  var methods = {
     // .send()
     send: function (message, to, from, sendAt, listId, dlrCallback, replyCallback, validity, repliesToEmail, fromShared, countrycode) {
       var params = {
@@ -33,6 +30,5 @@ module.exports = function (config) {
     }
   }
 
-  // we'll return only objects from known places, such as self.methods. This keeps everything else private.
-  return _.assign({}, self.methods)
+  return methods
 }
